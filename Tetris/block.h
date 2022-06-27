@@ -22,13 +22,13 @@ struct Block{
 class Tetris{
 public:
     Tetris();
+    static int getWidth();
+    static int getHeight();
     Block getNextBlock();
     Block getBlock();
     int getScore();
     int getGrid(int x,int y);
-    //窗口的信息
-    int getWidth();
-    int getHeight();
+
     void createBlock();
     void createNextBlock();
     bool rotate();//可以旋转返回true，否则返回false
