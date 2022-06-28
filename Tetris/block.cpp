@@ -128,10 +128,10 @@ void Tetris::dfs(int x,int y,int color){
     for(int i=0;i<4;i++){
         int tx=x+dx[i];int ty=y+dy[i];
         if(tx<0||ty<0||tx>=MAXX||ty>=MAXY)continue;
-        if(visited[tx][ty]==0 && grid[x][y].color==color){
+        if(visited[tx][ty]==0 && grid[tx][ty].color==color){
             count_cubes++;
             visited[tx][ty]=1;
-            grid[x][y].color=-1;
+            grid[tx][ty].color=-1;
             dfs(tx,ty,color);
         }
     }
@@ -168,17 +168,16 @@ void Tetris::drop(){
                 //有空的块，检查上面有没有不是空的块
                 for(int k=i-1;k>=0;k--){
                     if(grid[k][j].color!=-1){
-                        int len=0;
                         for(int l=k;l>=0;l--){
                             if(grid[l][j].color==-1)break;
-                            len++;
                         }
-                        //转移小块（可能有石头）
-                        for(int l=i;l>i-len;l--){
-                            grid[l][j].color=grid[l-(i-k)][j].color;
+                        int len=i-k;
+                        //整体向下移len
+                        for(int l=0;l<=k;l++){
+                            grid[l+len][j].color=grid[l][j].color;
                         }
                         //上面变为空
-                        for(int l=k-len;l>=0;l--){
+                        for(int l=0;l<len;l++){
                             grid[l][j].color=-1;
                         }
                     }
