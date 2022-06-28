@@ -52,14 +52,35 @@ bool Tetris::moveToRight(){
 //将方块向下移动一格，成功返回true，游戏结束返回false
 bool Tetris::moveDown(){
     if(!move(1,0)){
-        changeBlock(); //变为底部的方块整体
-        eliminate();
-        if(isEnd())return false;
+        if(block.is_item){
+            //0 石头 1 炸弹 2 水晶
+            if(block.id==0){
+                changeBlock(); //变为底部的方块整体
+                eliminate();
+                if(isEnd())return false;
+                else{
+                    createBlock();
+                    return true;
+                }
+            }
+            else if(block.id==1){
+                boom();return true;
+            }
+            else{//2
+                crystal();return true;
+            }
+        }
         else{
-            createBlock();
+            changeBlock(); //变为底部的方块整体
+            eliminate();
+            if(isEnd())return false;
+            else{
+                createBlock();
+                return true;
+            }
         }
     }
-    return true;
+    else return true;
 }
 
 bool Tetris::moveToBottom(){
@@ -67,8 +88,23 @@ bool Tetris::moveToBottom(){
     //但是这里应该是连续的动画，不能直接就下去了
     while(true){
         if(!move(1,0)){
-            changeBlock();
-            eliminate();
+            if(block.is_item){
+                //0 石头 1 炸弹 2 水晶
+                if(block.id==0){
+                    changeBlock(); //变为底部的方块整体
+                    eliminate();
+                }
+                else if(block.id==1){
+                    boom();
+                }
+                else{//2
+                    crystal();
+                }
+            }
+            else{
+                changeBlock(); //变为底部的方块整体
+                eliminate();
+            }
             break;
         }
     }
@@ -85,15 +121,15 @@ bool Tetris::isEnd(){
 }
 
 int visited[MAXX][MAXY];
-int count=0;
-int dx[4]={0,0,1,-1};
-int dy[4]={1,-1,0,0};
+int count_cubes=0;
 void Tetris::dfs(int x,int y,int color){
+    int dx[4]={0,0,1,-1};
+    int dy[4]={1,-1,0,0};
     for(int i=0;i<4;i++){
         int tx=x+dx[i];int ty=y+dy[i];
         if(tx<0||ty<0||tx>=MAXX||ty>=MAXY)continue;
         if(visited[tx][ty]==0 && grid[x][y].color==color){
-            count++;
+            count_cubes++;
             visited[tx][ty]=1;
             grid[x][y].color=-1;
             dfs(tx,ty,color);
@@ -103,18 +139,19 @@ void Tetris::dfs(int x,int y,int color){
 //单次的全局方块消除//
 //相同颜色消除，直接搜索
 //这里应该可以做动画
+//石头的行为和空的格子一样
 bool Tetris::one_time_eliminate(int mul){
     memset(visited,0,sizeof(visited));
     int total_score=0;
     for(int i=0;i<MAXX;i++){
         for(int j=0;j<MAXY;j++){
-            count=1;
+            count_cubes=1;
             if(grid[i][j].color>=0&&visited[i][j]==0){
                 visited[i][j]=1;
                 dfs(i,j,grid[i][j].color);
-                if(count>=2){
+                if(count_cubes>=2){
                     grid[i][j].color=-1;
-                    total_score+=count;
+                    total_score+=count_cubes;
                 }
             }
         }
@@ -136,7 +173,7 @@ void Tetris::drop(){
                             if(grid[l][j].color==-1)break;
                             len++;
                         }
-                        //转移小块
+                        //转移小块（可能有石头）
                         for(int l=i;l>i-len;l--){
                             grid[l][j].color=grid[l-(i-k)][j].color;
                         }
@@ -264,7 +301,7 @@ void Tetris::createNextBlock(){
 
 }
 
-bool inMap(int x,int y){
+bool Tetris::inMap(int x,int y){
     if(x<0||x>=MAXX||y<0||y>=MAXY)return false;
     return true;
 }
@@ -327,6 +364,22 @@ void Tetris::harder(){
     speed++; //这个还得实现得更好，而且可以有一些交互的东西
 }
 
+void Tetris::crystal(){
+    //消除一列
+    int j=block.cubes[0].y;
+    for(int i=0;i<MAXX;i++){
+        grid[i][j].color=-1;
+    }
+}
 
+void Tetris::boom(){
+    int dx[9]={-1,-1,-1,0,0,0,1,1,1};
+    int dy[9]={1,0,-1,1,0,-1,1,0,-1};
+    for(int i=0;i<9;i++){
+        int tx=block.cubes[0].x+dx[i];int ty=block.cubes[0].y+dy[i];
+        if(!inMap(tx,ty))continue;
+        grid[tx][ty].color=-1;
+    }
+}
 
 

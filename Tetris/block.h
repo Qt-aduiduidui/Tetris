@@ -21,7 +21,7 @@ class Block;
 
 class Cube{
 private:
-    int x,y,color;//color -2 道具 -1 没有颜色 0～5方块颜色
+    int x,y,color;//color -2 石头 -1 没有颜色 0～5方块颜色
     Cube(){};
 public:
     friend class Tetris;
@@ -59,7 +59,8 @@ public:
     bool one_time_eliminate(int mul);
     void eliminate();
     void harder(); //增加难度并提升等级
-    void createItem(); //制造道具
+    void crystal();
+    void boom();
 
 private:
     Block block;
@@ -70,8 +71,8 @@ private:
     int score;
     void changeBlock(); //将block中的数据转移到grid中
     bool move(int dx,int dy);
-    int getFirstFullLine();//持续消除
     void dfs(int x,int y,int color);
+    bool inMap(int x,int y);
 };
 
 #endif // BLOCK_H
