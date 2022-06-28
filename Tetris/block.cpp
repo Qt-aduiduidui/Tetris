@@ -1,7 +1,6 @@
 #include "block.h"
 
 
-
 Tetris::Tetris(){
     //初始化，但是记得还要create一次才有
     score=0;
@@ -110,7 +109,7 @@ bool Tetris::one_time_eliminate(int mul){
     for(int i=0;i<MAXX;i++){
         for(int j=0;j<MAXY;j++){
             count=1;
-            if(grid[i][j].color!=-1&&visited[i][j]==0){
+            if(grid[i][j].color>=0&&visited[i][j]==0){
                 visited[i][j]=1;
                 dfs(i,j,grid[i][j].color);
                 if(count>=2){
@@ -183,7 +182,7 @@ void Tetris::createNextBlock(){
             nextBlock.cubes[i].x=-1;nextBlock.cubes[i].y=-1;
         }
         for(int i=0;i<COUNT;i++){
-            nextBlock.cubes[i].color=0;
+            nextBlock.cubes[i].color=-2;
         }
         nextBlock.is_item=true;
         srand(time(0));

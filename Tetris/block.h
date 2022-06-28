@@ -21,7 +21,7 @@ class Block;
 
 class Cube{
 private:
-    int x,y,color;//color -1 没有颜色 0～5方块颜色
+    int x,y,color;//color -2 道具 -1 没有颜色 0～5方块颜色
     Cube(){};
 public:
     friend class Tetris;
