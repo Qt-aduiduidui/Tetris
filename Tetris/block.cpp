@@ -173,7 +173,7 @@ void Tetris::drop(){
                         }
                         int len=i-k;
                         //整体向下移len
-                        for(int l=0;l<=k;l++){
+                        for(int l=k;l>=0;l--){
                             grid[l+len][j].color=grid[l][j].color;
                         }
                         //上面变为空
