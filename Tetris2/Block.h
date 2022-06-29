@@ -44,15 +44,15 @@ public:
     Block getNextBlock();
     Block getBlock();
     int getScore();
-    Cube getGrid(int x,int y);
+    Cube& getGrid(int x,int y);
 
-    void createBlock();
-    void createNextBlock();
-    bool rotate();//可以旋转返回true，否则返回false
-    bool moveToLeft();
-    bool moveToRight();
-    bool moveDown();
-    bool moveToBottom();//直接下降到底部
+    void createBlock();             //创建新方块
+    void createNextBlock();         //创建下一个新方块
+    bool rotate();                  //可以旋转返回true，否则返回false
+    bool moveToLeft();              //左移
+    bool moveToRight();             //右移
+    bool moveDown();                //下移
+    bool moveToBottom();            //直接下降到底部
     bool isEnd();
     void drop();
     bool one_time_eliminate(int mul);
@@ -65,11 +65,10 @@ private:
     Block block;
     Block nextBlock;
     int speed;
-    //背景
-    Cube grid[MAXX+1][MAXY+1];
+    Cube grid[MAXX+1][MAXY+1];      //背景
     int score;
-    void changeBlock(); //将block中的数据转移到grid中
-    bool move(int dx,int dy);
+    void changeBlock();             //将block中的数据转移到grid中
+    bool move(int dx,int dy);       //移动
     void dfs(int x,int y,int color);
     bool inMap(int x,int y);
 };

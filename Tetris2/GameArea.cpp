@@ -4,7 +4,6 @@
 #include <QTime>
 #include <QMessageBox>
 
-
 GameArea::GameArea(QWidget *parent) : QWidget(parent)
 {
     tetris=NULL;
@@ -17,8 +16,10 @@ void GameArea::paintEvent(QPaintEvent *)
     update();
 }
 
+//画背景
 void GameArea::DrawBG()
 {
+
     QPainter painter(this);
     painter.setBrush(QBrush(Qt::red));
     painter.setPen(Qt::NoPen);
@@ -39,6 +40,7 @@ void GameArea::DrawBG()
         }
 }
 
+//画落块
 void GameArea::DrawCur()
 {
     const Block block=tetris->getBlock();
@@ -56,7 +58,7 @@ void GameArea::DrawCur()
     }
 }
 
-
+//按一定速度下落
 void GameArea::timerEvent(QTimerEvent* t)
 {
     if (t->timerId() == MyTimerID)
@@ -66,6 +68,7 @@ void GameArea::timerEvent(QTimerEvent* t)
     }
 }
 
+//新游戏
 void GameArea::NewGame()
 {
     MyTimerID = startTimer(1000);
@@ -75,15 +78,16 @@ void GameArea::NewGame()
     emit sigUpdateNextBlock(tetris->getNextBlock());
 }
 
+//按键
 void GameArea::KeyPressed(int key)
 {
     switch(key)
     {
-    case Qt::Key_Space: tetris->moveToBottom();break;
     case Qt::Key_Left: tetris->moveToLeft(); break;
     case Qt::Key_Right: tetris->moveToRight(); break;
     case Qt::Key_Down: tetris->moveDown(); break;
     case Qt::Key_Up: tetris->rotate(); break;
+    case Qt::Key_Space: tetris->moveToBottom(); break;
     default: break;
     }
     return;

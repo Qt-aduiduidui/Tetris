@@ -6,6 +6,7 @@ Tetris::Tetris(){
     //初始化，但是记得还要create一次才有
     score=0;
     speed=1;
+    srand(time(0));
     for(int i=0;i<MAXX;i++){
         for(int j=0;j<MAXY;j++){
             grid[i][j].color=-1;
@@ -38,7 +39,7 @@ int Tetris::getScore(){
     return score;
 }
 //返回该坐标处的值，以确定是否有方格
-Cube Tetris::getGrid(int x, int y){
+Cube& Tetris::getGrid(int x, int y){
     return grid[x][y];
 }
 bool Tetris::moveToLeft(){
@@ -50,7 +51,7 @@ bool Tetris::moveToRight(){
     return false;
 }
 //新增color，规则改变
-//将方块向下移动一格，成功返回true，游戏结束返回false
+//将方块向下移动一格，成功返回true,移动之后到达底部返回false
 bool Tetris::moveDown(){
     if(!move(1,0)){
         if(block.is_item){
@@ -109,7 +110,7 @@ bool Tetris::moveToBottom(){
             break;
         }
     }
-    if(isEnd())return false;
+    if(!isEnd())createBlock();
     return true;
 }
 
@@ -175,7 +176,7 @@ void Tetris::drop(){
                         //整体向下移len
                         for(int l=k;l>=0;l--){
                             grid[l+len][j].color=grid[l][j].color;
-                            if(l>=16)qDebug("grid(%d,%d) %d -> grid(%d,%d) %d",l+len,j,grid[l+len][j].color,l,j,grid[l][j].color);
+                            //if(l>=16)qDebug("grid(%d,%d) %d -> grid(%d,%d) %d",l+len,j,grid[l+len][j].color,l,j,grid[l][j].color);
                         }
                         //上面变为空
                         for(int l=0;l<len;l++){
@@ -219,9 +220,9 @@ int Tetris::getWidth(){
 //颜色,is_item
 void Tetris::createNextBlock(){
     int centerY=MAXY/2-1;
-    srand(time(0)); //随机数的种子
+    //随机数的种子
     int item=rand()%P;
-    qDebug()<<item<<endl;
+    //qDebug()<<item<<endl;
     //测试用
     if(item==0)
         item=1;
@@ -235,21 +236,18 @@ void Tetris::createNextBlock(){
             nextBlock.cubes[i].color=0;
         }
         nextBlock.is_item=true;
-        srand(time(0));
         int index=rand()%ITEM_KIND;
         nextBlock.id=index;
     }
     else{
         nextBlock.is_item=false;
         //形状
-        srand(time(0));
         int index=rand()%7;//0 长条 1 左L 2 右L 3 方块 4 左z 5 中间凸起 6 z
         nextBlock.id=index;
         //颜色
         int last_color=0;
         for(int i=0;i<COUNT;i++){
             while(true){
-                srand(time(0));
                 int c=rand()%COLOR;
                 if(c!=last_color){
                     last_color=c;
